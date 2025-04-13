@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TroisIdiot | HomePage</title>
+    <link rel="stylesheet" href="/src/output.css">
+    <link rel="shortcut icon" href="/TD.svg" type="svg">
+    <script defer src="firebase.js"></script>
+    <script defer src="index.js"></script>
+</head>
+<body class="bg-gradient-to-r from-red-900 via-orange-900 to-teal-900 h-screen w-full flex items-center justify-center">
+
+    <div
+      id="loginCard"
+      class="tilt-card bg-white p-8 rounded-2xl shadow-[0px_0px_10px_darkgreen] w-[350px] max-w-[90%] transition-all duration-75"
+      onmousemove="handleMouseMove(event)"
+      onmouseleave="resetTilt()"
+    >
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Welcome Back</h2>
+  
+      <form class="space-y-5">
+        <div>
+          <label class="block mb-1 text-gray-700 text-sm font-semibold">Email</label>
+          <input id="email"
+            type="email"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            placeholder="you@example.com"
+          />
+        </div>
+  
+        <div>
+          <label class="block mb-1 text-gray-700 text-sm font-semibold">Password</label>
+          <input id="password"
+            type="password"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            placeholder="••••••••"
+          />
+        </div>
+  
+        <button
+          onclick="login()"
+          type="submit"
+          class="w-full py-2 px-4 bg-teal-700 text-white font-semibold rounded-lg shadow-md hover:bg-teal-800 transition duration-300"
+        >
+          Login
+        </button>
+      </form>
+  
+      <p class="mt-4 text-sm text-center text-gray-600">
+        Don't have an account? <a href="signup.html" class="text-teal-600 hover:underline">Sign up</a>
+      </p>
+    </div>
+  
+    <script>
+      const card = document.getElementById("loginCard");
+  
+      function handleMouseMove(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+  
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+  
+        const rotateX = ((y - centerY) / centerY) * 20;
+        const rotateY = ((x - centerX) / centerX) * -20;
+  
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
+  
+      function resetTilt() {
+        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+      }
+    </script>
+  
+  </body>
+</html>

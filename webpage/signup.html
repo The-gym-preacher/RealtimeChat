@@ -1,0 +1,31 @@
+<!-- signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up | TroisIdiot</title>
+  <link rel="stylesheet" href="/src/output.css" />
+  <link rel="shortcut icon" href="/TD.svg" type="image/svg+xml" width="42" height="42">
+  <script defer src="firebase.js"></script>
+  <script defer src="signup.js"></script>
+</head>
+<body class="bg-gradient-to-r from-red-900 via-orange-900 to-teal-900 h-screen flex items-center justify-center">
+
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-[350px]">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
+
+    <form onsubmit="signup(event)" class="space-y-4">
+      <input type="text" id="username" placeholder="Username" class="w-full p-2 border rounded-lg" required />
+      <input type="email" id="email" placeholder="Email" class="w-full p-2 border rounded-lg" required />
+      <input type="password" id="password" placeholder="Password" class="w-full p-2 border rounded-lg" required />
+      <button class="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700">Sign Up</button>
+    </form>
+
+    <p class="mt-4 text-sm text-center text-gray-600">
+      Already have an account? <a href="login.html" class="text-teal-700 underline">Login</a>
+    </p>
+  </div>
+
+</body>
+</html>
