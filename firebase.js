@@ -23,13 +23,14 @@ import {
 
 
 const firebaseConfig = {
-    apikey: "AIzaSyBIH9Uu5f8ZAKmgYaVzA1AkF_Er0i3QngM",
-    authDomain: "troisidiot-755c0.firebaseapp.com",
-    projectId: "troisidiot-755c0",
-    storageBucket: "troisidiot-755c0.firebasestorage.app",
-    messagingSenderId: "535712535929",
-    appId: "1:535712535929 :web : b01be2b8de0ebbc8ed0ba8"
+  apiKey: "AIzaSyBAVH9GOpF7zzOrgOGuO__PSFhtVGUmt4g",
+  authDomain: "troisidiot-preacher.firebaseapp.com",
+  projectId: "troisidiot-preacher",
+  storageBucket: "troisidiot-preacher.firebasestorage.app",
+  messagingSenderId: "1075577991177",
+  appId: "1:1075577991177:web:e0d9bf2760ffda60b2c8d8"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
