@@ -1,3 +1,193 @@
+# 🔧 Step-by-Step Supabase Setup & Integration
+
+## 🧱 1. Create a Supabase Project
+
+Go to https://supabase.com
+
+Log in with GitHub or another method.
+
+Click New Project: Name your project
+
+Choose Region
+
+Set a strong Database Password (store this safely)
+
+Wait for Supabase to set it up.
+
+## 🔐 2. Enable Authentication
+In the Supabase dashboard:
+
+Navigate to **Authentication** > **Providers**
+
+Enable Email authentication.
+
+*Optionally*, **go to Auth** > **Settings** and **configure**:
+
+Site URL: http://localhost:3000 (or wherever you test)
+
+Confirm Email Redirect: Optional for now
+
+## 🗃️ 3. Create Tables for Messages
+
+In SQL Editor, paste this:
+
+```sql
+-- Users are managed automatically by Supabase Auth
+-- Create Messages Table
+create table messages (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  username text,
+  content text,
+  created_at timestamp with time zone default now()
+);
+
+-- Enable realtime
+alter table messages enable row level security;
+create policy "Allow all" on messages for select using (true);
+create policy "Insert messages" on messages for insert using (auth.uid() = user_id);
+```
+## 📦 4. Install Supabase JS Library
+
+Run this in your project root:
+
+```bash
+npm install @supabase/supabase-js
+```
+## 🧩 5. Connect Supabase in your firebase.js (rename it to supabase.js)
+```js
+// supabase.js
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://your-project.supabase.co'
+const supabaseKey = 'your-anon-key'
+
+export const supabase = createClient(supabaseUrl, supabaseKey)
+Get supabaseUrl and anon-key from Settings > API.
+```
+## 👥 6. Signup & Login
+In your signup.js, login.js and Chat.js; do:
+
+### Sign Up
+```js
+// Sign-up.js
+import { supabase } from './supabase.js';
+
+document.querySelector('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const usernameEl = document.getElementById('username');
+  const emailEl = document.getElementById('email');
+  const passwordEl = document.getElementById('password');
+  const errorEl = document.getElementById('error-message');
+
+  const username = usernameEl.value.trim();
+  const email = emailEl.value.trim();
+  const password = passwordEl.value;
+
+  // Check if username already exists in your custom "users" table
+  const { data: userWithUsername } = await supabase
+    .from('users')
+    .select('id')
+    .eq('username', username)
+    .maybeSingle();
+
+  if (userWithUsername) {
+    errorEl.textContent = 'Username is already taken.';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  // Sign up the user using Supabase Auth
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { username }, // store in user_metadata
+    },
+  });
+
+  if (error) {
+    errorEl.textContent = 'Signup failed: ' + error.message;
+    errorEl.classList.remove('hidden');
+    return;
+  }
+
+  // Add the user into the custom "users" table
+  const userId = data.user?.id;
+  if (userId) {
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert([{ id: userId, username }]);
+
+    if (insertError) {
+      errorEl.textContent = 'Error saving user data: ' + insertError.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+  }
+
+  // Success
+  errorEl.classList.add('hidden');
+  console.log('Signup successful:', data);
+  window.location.href = '/webpage/login.html';
+});
+```
+### Sign In
+```js
+// login.js
+import { supabase } from './supabase.js'
+
+document.querySelector('form').addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const emailEl = document.getElementById('email')
+  const passwordEl = document.getElementById('password')
+  const errorEl = document.getElementById('error-message')
+
+  let input = emailEl.value.trim()
+  const password = passwordEl.value
+  let emailToUse = input
+
+  if (!input.includes('@')) {
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('email')
+      .eq('username', input)
+      .single()
+
+    if (error || !user) {
+      errorEl.textContent = 'Login failed: Username not found.'
+      errorEl.classList.remove('hidden')
+      emailEl.value = ''
+      passwordEl.value = ''
+      return
+    }
+
+    emailToUse = user.email
+  }
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: emailToUse,
+    password,
+  })
+
+  if (error) {
+    errorEl.textContent = 'Login failed: ' + error.message
+    errorEl.classList.remove('hidden')
+    emailEl.value = ''
+    passwordEl.value = ''
+    return
+  }
+
+  errorEl.classList.add('hidden')
+  console.log('Login successful:', data)
+  window.location.href = '/webpage/chat.html'
+})
+```
+### Chat & Messages
+```js
+// Chat.js
 import { supabase } from './supabase.js';
 
 const messageInput = document.getElementById('messageInput');
@@ -29,7 +219,7 @@ window.logout = function () {
     document.getElementById('log').classList.replace('bi-door-open','bi-door-closed');
     setTimeout(() => {
       window.location.href = '/webpage/login.html';
-    }, 500);
+    }, 800);
   };
 
   document.getElementById('cancelLogout').onclick = () => {
@@ -179,3 +369,4 @@ toggleBtn.addEventListener('click', () => {
   await loadMessages();
   subscribeToMessages();
 })();
+```

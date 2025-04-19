@@ -5,38 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TroisIdiot | Chat</title>
   <link rel="stylesheet" href="/src/output.css" />
-  <link rel="shortcut icon" href="/TD.svg" type="svg">
-  <script defer src="firebase.js"></script>
-  <script defer src="chat.js"></script>
+  <link rel="shortcut icon" href="/src/img/TD.svg" type="svg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script defer type="module" src="/supabase.js"></script>
+  <script defer type="module" src="/chat.js"></script>
 </head>
-<body class="bg-[#1f1f2f] text-white h-screen flex flex-col">
+<body class="bg-[#121219] text-white h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="bg-teal-700 p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold">Trois Idiot Chatroom</h1>
-    <button onclick="logout()" class="bg-red-700 hover:bg-red-800 px-3 py-1 rounded text-sm">Logout</button>
+  <header class="bg-[#1e1e2f] px-4 sm:px-6 py-4 flex justify-between items-center shadow-md">
+    <div class="flex items-center gap-4">
+      <img src="/src/img/TD.svg" alt="logo" class="h-9">
+      <h1 class="text-xl sm:text-2xl font-bold tracking-wide">Trois Idiot Chatroom</h1>
+    </div>
+    <button onclick="logout()" class="bg-red-800 hover:bg-red-900 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+       Logout<span class="bi bi-door-open"></span>
+    </button>
   </header>
 
-  <!-- Chat Container -->
-  <main class="flex-1 overflow-y-auto p-4 space-y-4" id="messagesContainer">
-    <!-- Messages will appear here -->
-  </main>
+  <div class="flex flex-1 overflow-hidden px-2 sm:px-4 md:px-6 py-3 gap-4">
+    
+    <aside id="sidebar" class="bg-[#202030] w-55 p-4 overflow-y-auto border-r border-[#3c3c50] rounded-lg hidden md:block">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold border-b border-gray-600 pb-2">Active Users</h2>
+        <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden text-gray-400 hover:text-white">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <ul id="activeUsers" class="space-y-3">
+        <!-- Dynamically inserted users -->
+      </ul>
+    </aside>
 
-  <!-- Message Input -->
-  <footer class="bg-[#2b2b3a] p-4 flex gap-2 items-center">
-    <input
-      id="messageInput"
-      type="text"
-      placeholder="Type a message..."
-      class="flex-1 px-4 py-2 rounded-lg border border-gray-600 bg-[#1f1f2f] text-white focus:outline-none"
-    />
-    <button
-      onclick="sendMessage()"
-      class="bg-orange-800 hover:bg-orange-800 text-white px-4 py-2 rounded-lg"
-    >
-      Send
-    </button>
-  </footer>
+    <!-- Chat Section -->
+    <main class="flex-1 flex flex-col bg-[#1a1a28] rounded-lg">
+      <section id="messagesContainer" class="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
+        <!-- Messages will appear here -->
+      </section>
+
+      <footer class="bg-[#232334] px-4 sm:px-10 md:px-20 py-4 flex flex-row gap-4 sm:gap-8 items-center rounded-2xl border-t border-[#3c3c50]">
+        <input
+          id="messageInput"
+          type="text"
+          placeholder="Type a message..."
+          class="w-full sm:w-3/4 px-4 sm:px-7 py-3 rounded-xl border border-gray-600 bg-[#121219] text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
+        />
+        <button
+          onclick="sendMessage()"
+          class="bg-pink-800 hover:bg-pink-900 text-white px-5 py-2.5 rounded-xl font-medium"
+        >
+          Send
+        </button>
+      </footer>
+    </main>
+  </div>
 
 </body>
 </html>

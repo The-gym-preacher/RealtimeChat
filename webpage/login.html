@@ -5,27 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TroisIdiot | HomePage</title>
     <link rel="stylesheet" href="/src/output.css">
-    <link rel="shortcut icon" href="/TD.svg" type="svg">
-    <script defer src="firebase.js"></script>
-    <script defer src="index.js"></script>
+    <link rel="shortcut icon" href="/src/img/TD.svg" type="svg">
+    <script defer type="module" src="/supabase.js"></script>
+    <script defer type="module" src="/index.js"></script>
 </head>
-<body class="bg-gradient-to-r from-red-900 via-orange-900 to-teal-900 h-screen w-full flex items-center justify-center">
+<body class=" bg-gradient-to-b from-pink-600 to to-blue-600 before:content-[''] before:block before:absolute before:-z-1 before:w-full before:h-full before:top-0 before:left-0 before:bg-[url('/src/img/img-01.png')] before:bg-no-repeat before:bg-cover before:bg-center h-screen w-full flex items-center justify-center">
 
     <div
       id="loginCard"
-      class="tilt-card transform-3d bg-white p-8 rounded-2xl shadow-[0px_0px_10px_darkgreen] w-[350px] max-w-[90%] transition-all duration-75"
+      class="tilt-card transform-3d bg-white p-8 rounded-2xl shadow-[0px_0px_8px_pink] w-[350px] max-w-[90%] transition-all duration-75"
       onmousemove="handleMouseMove(event)"
       onmouseleave="resetTilt()"
     >
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6 translate-z-7">Welcome Back</h2>
-  
+      
+      <p id="error-message" class="mt-4 text-sm text-center text-red-600 translate-z-7 hidden"></p>
+
       <form class="space-y-5 transform-3d">
         <div class="transform-3d">
           <label class="block mb-1 text-gray-700 text-sm translate-z-7 font-semibold">Email</label>
           <input id="email"
-            type="email"
-            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-300"
             placeholder="you@example.com"
+            required
           />
         </div>
   
@@ -33,22 +35,21 @@
           <label class="block mb-1 text-gray-700 translate-z-7 text-sm font-semibold">Password</label>
           <input id="password"
             type="password"
-            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-300"
             placeholder="••••••••"
+            required
           />
         </div>
-  
         <button
-          onclick="login()"
           type="submit"
-          class="w-full py-2 px-4 bg-teal-700 text-white font-semibold rounded-lg shadow-md translate-z-7 hover:bg-teal-800 transition duration-300"
+          class="w-full py-2 px-4 bg-pink-600 text-white font-semibold rounded-lg shadow-md translate-z-7 hover:bg-pink-700 transition duration-300"
         >
           Login
         </button>
       </form>
   
       <p class="mt-4 text-sm text-center text-gray-600 translate-z-7 ">
-        Don't have an account? <a href="signup.html" class="text-teal-600 hover:underline">Sign up</a>
+        Don't have an account? <a href="signup.html" class="text-pink-600 hover:underline">Sign up</a>
       </p>
     </div>
   
