@@ -2,32 +2,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up | TroisIdiot</title>
-  <link rel="stylesheet" href="/src/output.css" />
-  <link rel="shortcut icon" href="/src/img/TD.svg" type="image/svg+xml" width="42" height="42">
-  <script defer type="module" src="/supabase.js"></script>
-  <script defer type="module" src="/signup.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TroisIdiot | SignUp</title>
+    <link rel="stylesheet" href="/src/output.css">
+    <link rel="shortcut icon" href="/src/img/TD.svg" type="svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script defer type="module" src="/supabase.js"></script>
+    <script defer type="module" src="/signup.js"></script>
+    <style>
+      .shadow-glow {
+        box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+      }
+      .hover-glow:hover {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+      }
+      .transform-3d {
+        transform-style: preserve-3d;
+        perspective: 1000px;
+      }
+      .tilt-card {
+        transform-style: preserve-3d;
+        transform: perspective(1000px);
+        transition: transform 0.3s ease;
+      }
+    </style>
 </head>
-<body class="bg-gradient-to-b from-pink-600 to to-blue-600 before:content-[''] before:block before:absolute before:-z-1 before:w-full before:h-full before:top-0 before:left-0 before:bg-[url('/src/img/img-01.png')] before:bg-no-repeat before:bg-cover before:bg-center h-screen flex items-center justify-center">
+<body class="bg-[#0f0f17] h-screen w-full flex items-center justify-center overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-50">
+      <div class="absolute inset-0 bg-gradient-to-br from-pink-600/20 to-purple-600/20"></div>
+      <div class="absolute h-[500px] w-[500px] rounded-full bg-pink-600/20 blur-3xl -top-40 -left-40"></div>
+      <div class="absolute h-[500px] w-[500px] rounded-full bg-purple-600/20 blur-3xl -bottom-40 -right-40"></div>
+    </div>
 
-  <div class="bg-white p-8 rounded-2xl shadow-xl w-[350px]">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
-    
-    <p id="error-message" class="mt-4 text-sm text-center text-red-500 hidden"></p>
+    <div
+      id="signupCard"
+      class="tilt-card transform-3d bg-[#1a1a28] p-8 rounded-2xl shadow-glow hover-glow w-[350px] max-w-[90%] transition-all duration-300 border border-[#2a2a3d] relative z-10"
+      onmousemove="handleMouseMove(event)"
+      onmouseleave="resetTilt()"
+    >
+      <!-- Logo -->
+      <div class="flex items-center justify-center mb-6 translate-z-7">
+        <img src="/src/img/TD.svg" alt="logo" class="h-12 w-12">
+      </div>
 
-    <form onsubmit="signup(event)" class="space-y-4">
-      <input type="text" id="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required />
-      <input type="email" id="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required />
-      <input type="password" id="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required />
-      <button class="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition-colors duration-300">Sign Up</button>
-    </form>
+      <h2 class="text-2xl font-bold text-center text-gray-100 mb-6 translate-z-7">Create Account</h2>
+      
+      <p id="error-message" class="mt-4 text-sm text-center text-red-400 translate-z-7 hidden"></p>
 
-    <p class="mt-4 text-sm text-center text-gray-600">
-      Already have an account? <a href="/login.html" class="text-pink-600 hover:underline">Login</a>
-    </p>
-  </div>
+      <form onsubmit="signup(event)" class="space-y-5 transform-3d">
+        <div class="transform-3d">
+          <label class="block mb-2 text-gray-300 text-sm translate-z-7 font-medium">Username</label>
+          <input
+            type="text"
+            id="username"
+            class="w-full px-4 py-3 rounded-lg bg-[#13131f] border border-[#2a2a3d] text-gray-100 focus:outline-none focus:border-pink-600/30 placeholder-gray-500 transition-all translate-z-7"
+            required
+            placeholder="Choose a username"
+          />
+        </div>
 
-</body>
+        <div class="transform-3d">
+          <label class="block mb-2 text-gray-300 text-sm translate-z-7 font-medium">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="w-full px-4 py-3 rounded-lg bg-[#13131f] border border-[#2a2a3d] text-gray-100 focus:outline-none focus:border-pink-600/30 placeholder-gray-500 transition-all translate-z-7"
+            required
+            placeholder="Enter your email"
+          />
+        </div>
+  
+        <div class="transform-3d">
+          <label class="block mb-2 text-gray-300 text-sm translate-z-7 font-medium">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="w-full px-4 py-3 rounded-lg bg-[#13131f] border border-[#2a2a3d] text-gray-100 focus:outline-none focus:border-pink-600/30 placeholder-gray-500 transition-all translate-z-7"
+            required
+            placeholder="Choose a password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 px-4 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all shadow-glow hover-glow translate-z-7 flex items-center justify-center gap-2 group"
+        >
+          <span>Create Account</span>
+          <i class="bi bi-arrow-right text-lg transition-transform group-hover:translate-x-1"></i>
+        </button>
+      </form>
+  
+      <p class="mt-6 text-sm text-center text-gray-400 translate-z-7">
+        Already have an account? <a href="/login.html" class="text-pink-500 hover:text-pink-400 hover:underline transition-colors">Sign in</a>
+      </p>
+    </div>
+
+    <script>
+      const card = document.getElementById("signupCard");
+  
+      function handleMouseMove(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+  
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+  
+        const rotateX = ((y - centerY) / centerY) * 20;
+        const rotateY = ((x - centerX) / centerX) * -20;
+  
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
+  
+      function resetTilt() {
+        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+      }
+    </script>
+  </body>
 </html>

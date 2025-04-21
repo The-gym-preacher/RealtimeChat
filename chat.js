@@ -4,6 +4,33 @@ const messageInput = document.getElementById('messageInput');
 const messagesContainer = document.getElementById('messagesContainer');
 const activeUsersList = document.getElementById('activeUsers');
 const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+
+// =========================
+// Mobile Sidebar Toggle
+// =========================
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+    document.body.classList.toggle('overflow-hidden');
+  }
+}
+
+// Make toggleSidebar available globally
+window.toggleSidebar = toggleSidebar;
+
+// Close sidebar on window resize if it gets to desktop size
+window.addEventListener('resize', () => {
+  const sidebar = document.getElementById('sidebar');
+  if (window.innerWidth >= 768 && sidebar && !sidebar.classList.contains('-translate-x-full')) {
+    toggleSidebar();
+  }
+});
 
 let currentUser = null;
 
@@ -47,6 +74,16 @@ async function loadCurrentUser() {
     return;
   }
   currentUser = data.user;
+
+  // Update UI with user info
+  const username = currentUser.user_metadata.username || currentUser.email;
+  const userInitial = username[0].toUpperCase();
+  document.getElementById('currentUserName').textContent = username;
+  document.getElementById('currentUserAvatar').textContent = userInitial;
+  // Update mobile avatar
+  if (mobileUserAvatar) {
+    mobileUserAvatar.textContent = userInitial;
+  }
 }
 
 // =========================
@@ -63,8 +100,31 @@ async function loadActiveUsers() {
     activeUsersList.innerHTML = '';
     data.forEach(user => {
       const li = document.createElement('li');
-      li.className = 'bg-[#1a1a28] p-3 rounded-md text-sm';
-      li.textContent = user.username;
+      li.className = 'flex items-center gap-3 p-2.5 bg-[#1f1f30] hover:bg-[#2a2a3d] rounded-lg cursor-pointer transition-all group';
+      
+      // Create user avatar
+      const avatar = document.createElement('div');
+      avatar.className = 'w-9 h-9 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium shadow-glow group-hover:scale-105 transition-transform';
+      avatar.textContent = user.username[0].toUpperCase();
+
+      // Create user info container
+      const userInfo = document.createElement('div');
+      userInfo.className = 'flex-1 flex items-center justify-between';
+      
+      // Add username
+      const username = document.createElement('div');
+      username.className = 'text-sm font-medium text-gray-200';
+      username.textContent = user.username;
+
+      // Add online indicator
+      const status = document.createElement('div');
+      status.className = 'w-2 h-2 rounded-full bg-green-400 animate-pulse';
+
+      userInfo.appendChild(username);
+      userInfo.appendChild(status);
+      
+      li.appendChild(avatar);
+      li.appendChild(userInfo);
       activeUsersList.appendChild(li);
     });
   } catch (err) {
@@ -86,7 +146,16 @@ async function loadMessages() {
     return;
   }
 
-  data.forEach(displayMessage);
+  // Clear existing messages
+  const messagesList = document.getElementById('messagesList');
+  if (messagesList) messagesList.innerHTML = '';
+
+  if (data.length === 0) {
+    document.getElementById('noMessages').style.display = 'flex';
+  } else {
+    document.getElementById('noMessages').style.display = 'none';
+    data.forEach(displayMessage);
+  }
   scrollToBottom();
 }
 
@@ -110,32 +179,44 @@ window.sendMessage = async function () {
 // =========================
 // Display a Message
 // =========================
-function displayMessage({ user_id, content, username }) {
-  const isOwn = user_id === currentUser.id;
+function displayMessage({ user_id, content, username, inserted_at }) {
+  // Hide the 'no messages' placeholder if it's visible
+  const noMessages = document.getElementById('noMessages');
+  if (noMessages) noMessages.style.display = 'none';
 
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `max-w-[75%] px-4 py-2 rounded-xl ${
-    isOwn
-      ? 'bg-orange-700 self-end text-right rounded-br-none'
-      : 'bg-[#2c2c3c] self-start text-left rounded-bl-none'
-  }`;
+  // Get the messages list container
+  const messagesList = document.getElementById('messagesList');
+  if (!messagesList) return;
 
-  const name = document.createElement('div');
-  name.className = 'text-xs text-gray-300 mb-1 font-semibold';
-  name.textContent = isOwn ? 'You' : username;
+  // Clone the message template
+  const template = document.getElementById('messageTemplate');
+  const messageEl = template.content.cloneNode(true);
 
-  const msg = document.createElement('p');
-  msg.className = 'break-words';
-  msg.textContent = content;
+  // Get references to the elements we need to update
+  const messageDiv = messageEl.querySelector('.message-appear');
+  const avatar = messageEl.querySelector('.flex-shrink-0 div');
+  const sender = messageEl.querySelector('.message-sender');
+  const time = messageEl.querySelector('.message-time');
+  const content_el = messageEl.querySelector('.message-content');
 
-  messageDiv.appendChild(name);
-  messageDiv.appendChild(msg);
+  // Set the message content
+  content_el.textContent = content;
+  sender.textContent = user_id === currentUser.id ? 'You' : username;
 
-  const wrapper = document.createElement('div');
-  wrapper.className = `flex ${isOwn ? 'justify-end' : 'justify-start'}`;
-  wrapper.appendChild(messageDiv);
+  // Set the time
+  const messageTime = new Date(inserted_at);
+  time.textContent = messageTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  messagesContainer.appendChild(wrapper);
+  // Set avatar initial
+  avatar.textContent = (username || 'U')[0].toUpperCase();
+
+  // Add appropriate styling for own messages
+  if (user_id === currentUser.id) {
+    messageDiv.classList.add('bg-gradient-to-r', 'from-pink-600/10', 'to-purple-600/10');
+  }
+
+  // Append the message
+  messagesList.appendChild(messageEl);
   scrollToBottom();
 }
 

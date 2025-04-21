@@ -6,45 +6,79 @@
     <title>TroisIdiot | HomePage</title>
     <link rel="stylesheet" href="/src/output.css">
     <link rel="shortcut icon" href="/src/img/TD.svg" type="svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script defer type="module" src="/supabase.js"></script>
     <script defer type="module" src="/index.js"></script>
+    <style>
+      .shadow-glow {
+        box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+      }
+      .hover-glow:hover {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+      }
+      .transform-3d {
+        transform-style: preserve-3d;
+        perspective: 1000px;
+      }
+      .tilt-card {
+        transform-style: preserve-3d;
+        transform: perspective(1000px);
+        transition: transform 0.3s ease;
+      }
+    </style>
 </head>
-<body class=" bg-gradient-to-b from-pink-600 to to-blue-600 before:content-[''] before:block before:absolute before:-z-1 before:w-full before:h-full before:top-0 before:left-0 before:bg-[url('/src/img/img-01.png')] before:bg-no-repeat before:bg-cover before:bg-center h-screen w-full flex items-center justify-center">
+<body class="bg-[#0f0f17] h-screen w-full flex items-center justify-center overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-50">
+      <div class="absolute inset-0 bg-gradient-to-br from-pink-600/20 to-purple-600/20"></div>
+      <div class="absolute h-[500px] w-[500px] rounded-full bg-pink-600/20 blur-3xl -top-40 -left-40"></div>
+      <div class="absolute h-[500px] w-[500px] rounded-full bg-purple-600/20 blur-3xl -bottom-40 -right-40"></div>
+    </div>
 
     <div
       id="loginCard"
-      class="tilt-card transform-3d bg-white p-8 rounded-2xl shadow-[0px_0px_8px_pink] w-[350px] max-w-[90%] transition-all duration-75"
+      class="tilt-card transform-3d bg-[#1a1a28] p-8 rounded-2xl shadow-glow hover-glow w-[350px] max-w-[90%] transition-all duration-100 border border-[#2a2a3d] relative z-10"
       onmousemove="handleMouseMove(event)"
       onmouseleave="resetTilt()"
     >
-      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6 translate-z-7">Welcome Back</h2>
+      <!-- Logo -->
+      <div class="flex items-center justify-center mb-6 translate-z-7">
+        <img src="/src/img/TD.svg" alt="logo" class="h-12 w-12">
+      </div>
+
+      <h2 class="text-2xl font-bold text-center text-gray-100 mb-6 translate-z-7">Welcome Back</h2>
       
-      <p id="error-message" class="mt-4 text-sm text-center text-red-600 translate-z-7 hidden"></p>
+      <p id="error-message" class="mt-4 text-sm text-center text-red-400 translate-z-7 hidden"></p>
 
       <form class="space-y-5 transform-3d">
         <div class="transform-3d">
-          <label class="block mb-1 text-gray-700 text-sm translate-z-7 font-semibold">Email</label>
-          <input id="email"
-            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-300"
-            placeholder="you@example.com"
+          <label class="block mb-2 text-gray-300 text-sm translate-z-7 font-medium">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="w-full px-4 py-3 rounded-lg bg-[#13131f] border border-[#2a2a3d] text-gray-100 focus:outline-none focus:border-pink-600/30 placeholder-gray-500 transition-all translate-z-7"
             required
+            placeholder="Enter your email"
           />
         </div>
-  
+
         <div class="transform-3d">
-          <label class="block mb-1 text-gray-700 translate-z-7 text-sm font-semibold">Password</label>
-          <input id="password"
+          <label class="block mb-2 text-gray-300 text-sm translate-z-7 font-medium">Password</label>
+          <input
             type="password"
-            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-300"
-            placeholder="••••••••"
+            id="password"
+            class="w-full px-4 py-3 rounded-lg bg-[#13131f] border border-[#2a2a3d] text-gray-100 focus:outline-none focus:border-pink-600/30 placeholder-gray-500 transition-all translate-z-7"
             required
+            placeholder="Enter your password"
           />
         </div>
+
         <button
           type="submit"
-          class="w-full py-2 px-4 bg-pink-600 text-white font-semibold rounded-lg shadow-md translate-z-7 hover:bg-pink-700 transition duration-300"
+          class="w-full py-3 px-4 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all shadow-glow hover-glow translate-z-7 flex items-center justify-center gap-2 group"
         >
-          Login
+          <span>Sign In</span>
+          <i class="bi bi-arrow-right text-lg transition-transform group-hover:translate-x-1"></i>
         </button>
       </form>
   

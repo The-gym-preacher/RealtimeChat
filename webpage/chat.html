@@ -9,52 +9,157 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <script defer type="module" src="/supabase.js"></script>
   <script defer type="module" src="/chat.js"></script>
+  <style>
+    .message-appear {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .scrollbar-custom::-webkit-scrollbar {
+      width: 6px;
+    }
+    .scrollbar-custom::-webkit-scrollbar-track {
+      background: #1a1a28;
+    }
+    .scrollbar-custom::-webkit-scrollbar-thumb {
+      background: #3c3c50;
+      border-radius: 3px;
+    }
+    .shadow-glow {
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+    }
+    .hover-glow:hover {
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+    }
+    input:focus {
+      box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+    }
+  </style>
 </head>
-<body class="bg-[#121219] text-white h-screen flex flex-col">
+<body class="bg-[#0f0f17] text-gray-100 h-screen flex">
+  <!-- Mobile Sidebar Toggle -->
+  <button onclick="toggleSidebar()" id="sidebarToggle" class="fixed bottom-4 right-4 md:hidden z-50 bg-gradient-to-r from-pink-600 to-purple-600 p-3 rounded-full shadow-glow hover-glow">
+    <i class="bi bi-people-fill text-xl"></i>
+  </button>
 
-  <header class="bg-[#1e1e2f] px-4 sm:px-6 py-4 flex justify-between items-center shadow-md">
-    <div class="flex items-center gap-4">
-      <img src="/src/img/TD.svg" alt="logo" class="h-9">
-      <h1 class="text-xl sm:text-2xl font-bold tracking-wide">Trois Idiot Chatroom</h1>
-    </div>
-    <button onclick="logout()" class="bg-red-800 hover:bg-red-900 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-       Logout<span class="bi bi-door-open"></span>
+  <!-- Sidebar Overlay -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="fixed left-0 top-0 w-[280px] bg-[#1a1a28] border-r border-[#2a2a3d] flex flex-col h-full z-50 -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <!-- Mobile Close Button -->
+    <button onclick="toggleSidebar()" class="absolute top-4 right-4 text-gray-400 hover:text-white md:hidden">
+      <i class="bi bi-x-lg text-xl"></i>
     </button>
-  </header>
-
-  <div class="flex flex-1 overflow-hidden px-2 sm:px-4 md:px-6 py-3 gap-4">
-    
-    <aside id="sidebar" class="bg-[#202030] w-55 p-4 overflow-y-auto border-r border-[#3c3c50] rounded-lg hidden md:block">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold border-b border-gray-600 pb-2">Active Users</h2>
-        <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden text-gray-400 hover:text-white">
-          <i class="bi bi-x-lg"></i>
+    <!-- User Profile Section -->
+    <div class="p-4 border-b border-[#2a2a3d]">
+      <div class="flex items-center gap-3 mb-4">
+        <div id="currentUserAvatar" class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 flex items-center justify-center text-white font-semibold shadow-glow"></div>
+        <div>
+          <h2 id="currentUserName" class="font-semibold text-gray-100">Loading...</h2>
+          <p class="text-sm text-green-400">Online</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="logout()" class="flex items-center gap-2 px-3 py-1.5 text-sm text-red-400 hover:bg-red-500/10 rounded-md transition-all hover:text-red-300">
+          <i class="bi bi-door-open"></i>
+          <span>Logout</span>
         </button>
       </div>
-      <ul id="activeUsers" class="space-y-3">
-        <!-- Dynamically inserted users -->
-      </ul>
-    </aside>
+    </div>
 
-    <!-- Chat Section -->
-    <main class="flex-1 flex flex-col bg-[#1a1a28] rounded-lg">
-      <section id="messagesContainer" class="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
-        <!-- Messages will appear here -->
+    <!-- Active Users Section -->
+    <div class="flex-1 overflow-y-auto scrollbar-custom">
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-gray-300">Community Members</h3>
+          <div class="flex items-center gap-2">
+            <div class="flex -space-x-2">
+              <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+              <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse delay-75"></div>
+              <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse delay-150"></div>
+            </div>
+            <span class="text-xs text-gray-400">Online</span>
+          </div>
+        </div>
+        <!-- Active Users List -->
+        <div class="mt-2">
+          <ul id="activeUsers" class="space-y-2">
+            <!-- Active users will be inserted here -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 flex flex-col bg-[#13131f] w-full md:w-[calc(100%-280px)]">
+      <!-- Chat Header -->
+      <header class="px-4 sm:px-6 py-4 border-b border-[#2a2a3d] flex items-center justify-between bg-[#1a1a28]">
+        <div class="flex items-center gap-3">
+          <img src="/src/img/TD.svg" alt="logo" class="h-7 sm:h-8">
+          <h1 class="text-lg sm:text-xl font-semibold text-gray-100">Trois Idiot</h1>
+        </div>
+        <!-- Mobile User Info -->
+        <div class="flex items-center gap-3 md:hidden">
+          <div id="mobileUserAvatar" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 flex items-center justify-center text-white text-sm font-semibold shadow-glow"></div>
+        </div>
+      </header>
+
+      <!-- Messages Area -->
+      <section id="messagesContainer" class="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-4 scrollbar-custom bg-[#13131f]">
+        <div id="noMessages" class="flex flex-col items-center justify-center h-full text-gray-400">
+          <div class="w-20 h-20 mb-4 flex items-center justify-center rounded-full bg-[#2a2a3d]">
+            <i class="bi bi-chat-dots text-3xl text-gray-300"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-2 text-gray-200">Welcome to Troisidiot</h3>
+          <p class="text-center text-gray-400 max-w-sm">Connect with friends and colleagues in real-time. Start a new conversation or join an existing chat room.</p>
+        </div>
+        <div id="messagesList" class="space-y-4">
+          <!-- Messages will be inserted here -->
+        </div>
+        <template id="messageTemplate">
+          <div class="message-appear flex items-start gap-3 p-3 rounded-lg transition-colors hover:bg-[#1a1a28]">
+            <div class="flex-shrink-0">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium shadow-glow"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2">
+                <span class="font-medium message-sender text-gray-200"></span>
+                <span class="text-xs text-gray-500 message-time"></span>
+              </div>
+              <p class="mt-1 text-gray-300 message-content break-words"></p>
+            </div>
+          </div>
+        </template>
       </section>
 
-      <footer class="bg-[#232334] px-4 sm:px-10 md:px-20 py-4 flex flex-row gap-4 sm:gap-8 items-center rounded-2xl border-t border-[#3c3c50]">
-        <input
-          id="messageInput"
-          type="text"
-          placeholder="Type a message..."
-          class="w-full sm:w-3/4 px-4 sm:px-7 py-3 rounded-xl border border-gray-600 bg-[#121219] text-white focus:outline-none focus:ring-2 focus:ring-orange-600"
-        />
-        <button
-          onclick="sendMessage()"
-          class="bg-pink-800 hover:bg-pink-900 text-white px-5 py-2.5 rounded-xl font-medium"
-        >
-          Send
-        </button>
+      <!-- Message Input Area -->
+      <footer class="px-3 sm:px-6 py-4 border-t border-[#2a2a3d] bg-[#1a1a28]">
+        <div class="relative flex gap-2 sm:gap-4 items-center">
+          <div class="relative flex-1">
+            <input
+              id="messageInput"
+              type="text"
+              placeholder="Type a message..."
+              class="w-full px-4 pr-12 py-3 rounded-lg border border-[#2a2a3d] bg-[#13131f] text-gray-100 focus:outline-none focus:border-pink-600/30 placeholder-gray-500 transition-all"
+              onkeypress="if(event.key === 'Enter') sendMessage()"
+            />
+            <div id="typingIndicator" class="absolute -top-6 left-2 text-sm text-gray-400 hidden">
+              <i class="bi bi-three-dots animate-pulse"></i>
+              <span>Someone is typing...</span>
+            </div>
+          </div>
+          <button
+            onclick="sendMessage()"
+            class="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white px-5 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-glow hover-glow"
+          >
+            <span>Send</span>
+            <i class="bi bi-send"></i>
+          </button>
+        </div>
       </footer>
     </main>
   </div>
