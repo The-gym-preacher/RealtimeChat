@@ -28,7 +28,7 @@ window.logout = function () {
     await supabase.auth.signOut();
     document.getElementById('log').classList.replace('bi-door-open','bi-door-closed');
     setTimeout(() => {
-      window.location.href = '/webpage/login.html';
+      window.location.href = '/login.html';
     }, 500);
   };
 
@@ -43,7 +43,7 @@ window.logout = function () {
 async function loadCurrentUser() {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) {
-    window.location.href = '/webpage/login.html';
+    window.location.href = '/login.html';
     return;
   }
   currentUser = data.user;
