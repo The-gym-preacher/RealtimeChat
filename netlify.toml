@@ -8,4 +8,4 @@ to = "/login.html"
 status = 200
 
 [build.environment]
-NODE_VERSION = "16"
+NODE_VERSION = "22.11.0"
